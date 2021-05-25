@@ -1,0 +1,35 @@
+{
+  "name": "expensify",
+  "version": "1.0.0",
+  "description": "Some list app",
+  "main": "index.js",
+  "scripts": {
+    "serve": "live-server public/",
+    "build": "webpack",
+    "dev-server": "webpack serve --mode development"
+  },
+  "author": "Fabricio Saavedra",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-react": "^7.13.13",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^5.2.6",
+    "live-server": "^1.2.1",
+    "node-sass": "^6.0.0",
+    "normalize.css": "^8.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-modal": "^3.13.1",
+    "sass-loader": "^11.1.1",
+    "style-loader": "^2.0.0",
+    "validator": "^8.0.0",
+    "webpack": "^5.37.1",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.7.0"
+  }
+}
