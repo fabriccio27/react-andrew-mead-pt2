@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom"; 
+import {Provider} from "react-redux";
 import "normalize.css/normalize.css";
 import "./styles/styles.scss";
 
@@ -11,17 +12,26 @@ import getVisibleExpenses from "./selectors/expenses";
 
 const store = configureStore();
 
-
 //probar un par de acciones
 store.dispatch(addExpense({description:"Water bill", amount:1300, createdAt:15000}));
 store.dispatch(addExpense({description:"Gas bill", amount:1800, createdAt:20000}));
+store.dispatch(addExpense({description:"Rent", amount:109500, createdAt:15000}));
 console.log(store.getState());
-store.dispatch(setTextFilter("water"));
+//store.dispatch(setTextFilter("water")); //esto en realidad lo quiero manejar a través de UI/UX
 
 const state = store.getState();
 
 const visibleExpenses = getVisibleExpenses(state.expenses, state.filter);
 console.log(visibleExpenses);
 
-ReactDOM.render(<AppRouter/>, document.querySelector("#app"));
+/* con Provider, le puedo dar acceso directo al store a los distintos componentes que lo necesiten
+connect lo voy a usar en c/componente para poder leer del store o despachar acciones
+ */
+const jsx = (
+    <Provider store={store}>
+        <AppRouter />
+    </Provider>
+);
+
+ReactDOM.render(jsx, document.querySelector("#app"));
 

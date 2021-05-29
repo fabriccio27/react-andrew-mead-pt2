@@ -1,8 +1,11 @@
+import moment from "moment";
+//quiero que tome de startDate y endDate los extremos del mes corriente
+
 const filReducerDefaultState = {
     text:"",
     sortBy:"date",
-    startDate:undefined,
-    endDate:undefined
+    startDate:moment().startOf("month"),
+    endDate:moment().endOf("month")
 };
 const filtersReducer = (state=filReducerDefaultState, action) =>{
     switch(action.type){
