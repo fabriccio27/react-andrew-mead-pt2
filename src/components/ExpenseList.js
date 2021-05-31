@@ -5,12 +5,21 @@ import selectExpenses from "../selectors/expenses";
 
 //IMPORTANTE cuando conecto componente al store de Redux, se vuelve reactivo, se actualiza ante el cambio de store
 //no necesito usar store.subscribe o store.getState...
-const ExpenseList = (props) =>(
+
+//exporto para el testeo
+export const ExpenseList = (props) =>(
     <div>
         <h2>Expense List</h2>
-        {props.expenses.map((expense)=>{
-            return <ExpenseListItem key={expense.id} {...expense} />
-        })}
+        {
+            props.expenses.length === 0? (
+                <p>No expenses to show</p>
+            ) : (
+                props.expenses.map((expense)=>{
+                    return <ExpenseListItem key={expense.id} {...expense} />
+                })
+            )
+        }
+        
     </div>
 );
 
