@@ -6,36 +6,51 @@ import {editExpense, removeExpense} from "../actions/expenses";
 // - tengo que conectar componente al store, pero si no requiero nada del state (porque ya obtuve de props en este caso), dejo () vacios
 
 
-const EditExpensePage = (props) => {
-    return(
-        <div>
-            This is the edit expense page for {props.match.params.id}
-            <ExpenseForm
-                expense={props.expense} /* esto pasa a expense form y tiene que poblar el state, en lo posible */
-                onSubmit={(expense)=>{
-                    // aca tengo que despachar el editExpense, fijarse con que argumentos llamar
-                    props.dispatch(editExpense(props.expense.id, expense));
-                    props.history.push("/");
-                }}
-            />
-            <button onClick={()=>{
-                props.dispatch(removeExpense({id:props.expense.id}));
-                props.history.push("/");
-            }}>Remove</button>
-        </div>
-    )
+export class EditExpensePage extends React.Component {
+    onSubmit = (expense) =>{
+        this.props.editExpense(this.props.expense.id, expense);
+        this.props.history.push("/");
+    };
+    onClick = () =>{
+        this.props.removeExpense({id:this.props.expense.id}); //el objeto seria data, segun lo que puse en mapDispatchToProps
+        this.props.history.push("/");
+    };
+    render(){
+        return(
+            <div>
+                {/* This is the edit expense page for {this.props.match.params.id} */}
+                <ExpenseForm
+                    expense={this.props.expense} /* esto pasa a expense form y tiene que poblar el state, en lo posible */
+                    onSubmit={this.onSubmit}
+                />
+                <button onClick={this.onClick}>Remove</button>
+            </div>
+        );
+    };
 }
+
 //literamente es sacar de state y pasar como props, a quien? al componente a conectar
-const mapStateToProps=(state, props)=>{
+const mapStateToProps = (state, props) =>{
     // quiero de state.expenses, la expense que tenga el mismo id que el id que saco de props
     //el metodo .find() para arrays es como un filter, pero devuelve un solo match, el 1ro
     return {
         expense: state.expenses.find((expense)=>{
             return expense.id === props.match.params.id;
         })
-    }
+    };
+};
+
+const mapDispatchToProps = (dispatch) =>{
+    /* a las props que accedo en las funciones, le mapoe una funcion que incluye dispatch 
+    y una accion, pasar los parametros bien */
+    return {
+        editExpense:(id,expense) => dispatch(editExpense(id,expense)),
+        removeExpense:(data) => dispatch(removeExpense(data))
+    };
 }
-export default connect(mapStateToProps)(EditExpensePage);
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditExpensePage);
 
 // en history tengo lo que necesita react-router para hacer client-side routing, metodos para redirigir y demas solo con js
 // componentes que no fueron seteados para un Route no tienen props --> Header no recibe props. 
