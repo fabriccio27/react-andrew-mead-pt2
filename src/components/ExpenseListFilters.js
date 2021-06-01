@@ -3,13 +3,21 @@ import {connect} from "react-redux"; // como lo que quiero es modificar el store
 import { setTextFilter, sortByAmount, sortByDate, setStartDate, setEndDate } from "../actions/filters";
 import {DateRangePicker} from "react-dates";
 
-class ExpenseListFilters extends React.Component {
+export class ExpenseListFilters extends React.Component {
     state = {
         calendarFocused:null
     };   
+    onTextChange = (event) => {
+        this.props.setTextFilter(event.target.value);
+    };
+    onSortChange = (event) => {
+        //por como defini el reducer de filter, el default en filters.sortBy es date
+        if (event.target.value === "date") this.props.sortByDate();
+        else if (event.target.value === "amount") this.props.sortByAmount();
+    };
     onDatesChange =({startDate,endDate})=>{
-        this.props.dispatch(setStartDate(startDate));
-        this.props.dispatch(setEndDate(endDate));
+        this.props.setStartDate(startDate);
+        this.props.setEndDate(endDate);
     };
     onFocusChange=(calendarFocused)=>{
         this.setState(()=>({calendarFocused}));
@@ -17,22 +25,18 @@ class ExpenseListFilters extends React.Component {
     render(){
         return(
             <div>
-                <input type="text" value={this.props.filters.text} onChange={(event)=>{
-                    props.dispatch(setTextFilter(event.target.value))
-                }} />
+                <input type="text" value={this.props.filters.text} onChange={this.onTextChange} />
                 {/* cada vez que modifique el input, por el onChange, voy a resetear filter.text en el store
                 como en ExpenseList estoy usando selectExpenses, me va cambiando que es lo que renderiza */}
-                <select value={this.props.filters.sortBy} onChange={(event)=>{
-                    //por como defini el reducer de filter, el default en filters.sortBy es date
-                    if (event.target.value === "date") this.props.dispatch(sortByDate());
-                    else if (event.target.value === "amount") this.props.dispatch(sortByAmount());
-                }}>
+                <select value={this.props.filters.sortBy} onChange={this.onSortChange}>
                     <option value="date">Date</option>
                     <option value="amount">Amount</option>
                 </select>
                 <DateRangePicker
                     startDate={this.props.filters.startDate}
+                    startDateId={"pripripri"}
                     endDate={this.props.filters.endDate}
+                    endDateId={"pruprupru"}
                     onDatesChange={this.onDatesChange}
                     focusedInput={this.state.calendarFocused}
                     onFocusChange={this.onFocusChange}
@@ -47,15 +51,21 @@ class ExpenseListFilters extends React.Component {
 }
 
 // esto tiene que despachar una accion para setear el filter.text. 
-// cuando conecto un componente, adquiero .dispatch en sus props
+// cuando conecto un componente, adquiero .dispatch en sus props.
 const mapStateToProps = (state) => {
     //aca va qué parte quiero del state
     return {
         filters:state.filter
     };
 };
-/* const mapDispatchToProps = ()=> {
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setTextFilter:(text) => dispatch(setTextFilter(text)),
+        setStartDate:(startDate) => dispatch(setStartDate(startDate)),
+        setEndDate:(endDate) => dispatch(setEndDate(endDate)),
+        sortByDate:() => dispatch(sortByAmount()),
+        sortByAmount:() => dispatch(sortByDate())
+    };
+};
 
-}
- */
-export default connect(mapStateToProps)(ExpenseListFilters);
+export default connect(mapStateToProps, mapDispatchToProps)(ExpenseListFilters);
