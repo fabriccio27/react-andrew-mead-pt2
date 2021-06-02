@@ -15,7 +15,7 @@ module.exports = (env, argv) =>{
         //entry: './src/playground/hoc.js',
         output:{
             // path es absoluto, por eso uso __dirname
-            path:path.join(__dirname,"public"),
+            path:path.join(__dirname,"public","dist"),
             filename:'bundle.js'
         },
         module:{
@@ -47,16 +47,12 @@ module.exports = (env, argv) =>{
         devtool: isProduction?'source-map':'inline-source-map',
         devServer:{
             contentBase: path.join(__dirname,"public"),
-            historyApiFallback:true
+            historyApiFallback:true,
+            publicPath:"/dist/"
         }
+        //devServer corre virtualmente, desde memoria, tengo que cambiar porque trata de busca los recursos virtuales en root de folder
+        //y ahora estaria accediendo desde dist. publicPath indica donde estan los archivos del bundle, por default es root respecto contentBase
+        //si veo dist, antes de armar el build de produccion, veo que esta vacio, porque con devServer corre desde memoria
     };
 }
-
-//module.exports = 
-
-
-// para decirle a webpack que use Babel, tengo que hacer un loader, algo que le diga como comportarse
-// tengo que instalar dos cosas, babel-core, parecido a babel-cli,y babel-loader
-/* el loader lo hago a traves de property module de este archivo, y para decirle que use presets, uso
-en prop loader, prop options y prop presets */
 
