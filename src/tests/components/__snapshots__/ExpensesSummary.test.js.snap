@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render correctly ExpensesSummary when passing expenses 1`] = `
+<div>
+  <p>
+    Total amount: 
+    $189.99
+     for 
+    3
+     expense(s)
+  </p>
+</div>
+`;
+
+exports[`should render correctly ExpensesSummary with no expenses 1`] = `
+<div>
+  <p>
+    No expenses selected
+  </p>
+</div>
+`;
