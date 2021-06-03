@@ -1,4 +1,9 @@
-import {addExpense, editExpense, removeExpense} from "../../actions/expenses";
+import {addExpense, editExpense, removeExpense, startAddExpense} from "../../actions/expenses";
+import testExpenses from "../fixtures/expenses";
+import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
+
+const createMockStore = configureMockStore([thunk]);
 
 // para hacer imports con esta notacion tengo que hacer un archivo de babel
 test("should remove expense action object", ()=>{
@@ -22,24 +27,28 @@ test("should return an edit expense action object", ()=>{
     });
 });
 
-test("should return an add expense action object when passing values", ()=>{
-    const expenseData = {
-        description:"rent",
-        amount:5100,
-        createdAt:1000,
-        note:"this was last month rent"
-    };
-    const action = addExpense(expenseData);
+test("should setupadd expense action object when passing values", ()=>{
+    
+    const action = addExpense(testExpenses[2]);
     //si comparo con lo que espero, tengo un id que es generado para ser unico, eso me va a complicar en la prueba. Hay workaround
     expect(action).toEqual({
         type:"ADD_EXPENSE",
-        expense:{
-            ...expenseData,
-            id:expect.any(String)
-        }
+        expense:testExpenses[2]
     });
 });
-test("should return an add expense action object when passing no arguments", ()=>{
+
+test("should add expense to database and store", ()=>{
+    const store = createMockStore({});
+    const expenseData = {
+        description:"Mouse",
+        note:"",
+        amount:3000,
+        createAdd:1000
+    };
+    store.dispatch(startAddExpense(expenseData));
+});
+
+/* test("should return an add expense action object when passing no arguments", ()=>{
     
     const action = addExpense();
     //si comparo con lo que espero, tengo un id que es generado para ser unico, eso me va a complicar en la prueba. Hay workaround
@@ -53,4 +62,4 @@ test("should return an add expense action object when passing no arguments", ()=
             createdAt:0
         }
     });
-});
+}); */

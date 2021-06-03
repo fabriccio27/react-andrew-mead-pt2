@@ -8,11 +8,11 @@ import {AddExpensePage} from "../../components/AddExpensePage";
 import testExpenses from "../fixtures/expenses";
 
 /* para no repetir lineas de un test a otro, uso lifecycle method beforeEach, ver otros en docs */
-let addExpense, history, wrapper;
+let startAddExpense, history, wrapper;
 beforeEach(()=>{
-    addExpense = jest.fn();
+    startAddExpense = jest.fn();
     history = {push:jest.fn()};
-    wrapper = shallow(<AddExpensePage addExpense={addExpense} history={history} />);
+    wrapper = shallow(<AddExpensePage startAddExpense={startAddExpense} history={history} />);
 });
 test("should render add expense page correctly", ()=>{
     expect(wrapper).toMatchSnapshot();
@@ -23,6 +23,6 @@ test("should use onSubmit correctly", ()=>{
     //lo que quiero aca es ejecutar el onSubmit que le paso a ExpenseForm, lo agarro con find y prop
     //tambien necesito un expense, lo importo
     wrapper.find("ExpenseForm").prop("onSubmit")(testExpenses[0]);
-    expect(addExpense).toHaveBeenLastCalledWith(testExpenses[0]);
+    expect(startAddExpense).toHaveBeenLastCalledWith(testExpenses[0]);
     expect(history.push).toHaveBeenLastCalledWith("/");
 });
