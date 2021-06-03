@@ -2,6 +2,7 @@ import {addExpense, editExpense, removeExpense, startAddExpense} from "../../act
 import testExpenses from "../fixtures/expenses";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
+import database from "../../firebase/firebase";
 
 const createMockStore = configureMockStore([thunk]);
 
@@ -38,6 +39,7 @@ test("should setupadd expense action object when passing values", ()=>{
 });
 
 test("should add expense to database and store", (done)=>{
+    
     /* por que paso done? hasta aca todos los test fueron sync, pero aca estoy usando una llamada a firebase async
     Si no paso done, el test va a correr y no va a esperar a que la promise se resuelva, si la promesa fracaso, el test no se enteró 
     y da como valido el test case. Con done(), indico al test hasta que parte del codigo tiene que esperar para concluir*/
@@ -46,14 +48,56 @@ test("should add expense to database and store", (done)=>{
         description:"Mouse",
         note:"",
         amount:3000,
-        createAdd:1000
+        createdAt:1000
     };
-    store.dispatch(startAddExpense(expenseData).then(()=>{
+    store.dispatch(startAddExpense(expenseData)).then(()=>{
+        
+        const actions = store.getActions();
+        //en este test solo despacho una accion, por eso accedo a la primera
+        expect(actions[0]).toEqual({
+            type:"ADD_EXPENSE",
+            expense:{
+                id:expect.any(String),
+                ...expenseData
+            }
+        });
+        return database.ref(`expenses/${actions[0].expense.id}`).once("value");
         //cualquier cosa que ponga aca corre despues de la llamada async a firebase, por el then
+    }).then((snapshot)=>{
+        expect(snapshot.val()).toEqual(expenseData);
         done();
-    }));
+    });
+});
 
+test("should add expense when expense is empty", (done)=>{
     
+    /* por que paso done? hasta aca todos los test fueron sync, pero aca estoy usando una llamada a firebase async
+    Si no paso done, el test va a correr y no va a esperar a que la promise se resuelva, si la promesa fracaso, el test no se enteró 
+    y da como valido el test case. Con done(), indico al test hasta que parte del codigo tiene que esperar para concluir*/
+    const store = createMockStore({});
+    const expenseDefaults = {
+        description:"",
+        note:"",
+        amount:0,
+        createdAt:0
+    };
+    store.dispatch(startAddExpense(expenseDefaults)).then(()=>{
+        
+        const actions = store.getActions();
+        //en este test solo despacho una accion, por eso accedo a la primera
+        expect(actions[0]).toEqual({
+            type:"ADD_EXPENSE",
+            expense:{
+                id:expect.any(String),
+                ...expenseDefaults
+            }
+        });
+        return database.ref(`expenses/${actions[0].expense.id}`).once("value");
+        //cualquier cosa que ponga aca corre despues de la llamada async a firebase, por el then
+    }).then((snapshot)=>{
+        expect(snapshot.val()).toEqual(expenseDefaults);
+        done();
+    });
 });
 
 /* test("should return an add expense action object when passing no arguments", ()=>{
