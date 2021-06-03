@@ -37,7 +37,10 @@ test("should setupadd expense action object when passing values", ()=>{
     });
 });
 
-test("should add expense to database and store", ()=>{
+test("should add expense to database and store", (done)=>{
+    /* por que paso done? hasta aca todos los test fueron sync, pero aca estoy usando una llamada a firebase async
+    Si no paso done, el test va a correr y no va a esperar a que la promise se resuelva, si la promesa fracaso, el test no se enteró 
+    y da como valido el test case. Con done(), indico al test hasta que parte del codigo tiene que esperar para concluir*/
     const store = createMockStore({});
     const expenseData = {
         description:"Mouse",
@@ -45,7 +48,12 @@ test("should add expense to database and store", ()=>{
         amount:3000,
         createAdd:1000
     };
-    store.dispatch(startAddExpense(expenseData));
+    store.dispatch(startAddExpense(expenseData).then(()=>{
+        //cualquier cosa que ponga aca corre despues de la llamada async a firebase, por el then
+        done();
+    }));
+
+    
 });
 
 /* test("should return an add expense action object when passing no arguments", ()=>{
