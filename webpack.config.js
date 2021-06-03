@@ -3,7 +3,7 @@ para que wp funcione le tengo que dar entry point , donde arranca la app
 y output para archivo bundle
  */
 const path = require("path");
-const path = require("webpack");
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 //si estoy corriendo jest, process.env.NODE_ENV saca su valor por el flag de cross-env=test, si no, es development.
