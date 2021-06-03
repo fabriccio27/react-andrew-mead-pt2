@@ -47,12 +47,26 @@ const editExpense = (id, updates) => {
         updates
     };
 };
+//REMOVE EXPENSE SECTION ---------------------------------------------
 const removeExpense = ({id}={}) => {
     return {
         type:"REMOVE_EXPENSE",
         id
-    }
-}
+    };
+};
+const startRemoveExpense = (id) => {
+    return (dispatch)=>{
+        /* tengo que usar database para borrar el elemento con id coincidente */
+        return database.ref(`expenses/${id}`).remove()
+        .then(()=>{
+            dispatch(removeExpense({id}));
+        })
+        .catch(err=>{
+            console.log(err);
+            dispatch(removeExpense());
+        });
+    };
+};
 //SET_EXPENSES
 const setExpenses=(expenses)=>{
     return {
@@ -82,4 +96,4 @@ const startSetExpenses = () => {
     //parse expense data as array
     //dispatch setExpenses with parsed array
 }
-export {addExpense, editExpense, removeExpense, startAddExpense, setExpenses, startSetExpenses};
+export {addExpense, editExpense, removeExpense, startAddExpense, setExpenses, startSetExpenses, startRemoveExpense};
