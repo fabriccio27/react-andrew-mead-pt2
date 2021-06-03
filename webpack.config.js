@@ -8,6 +8,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 //si estoy corriendo jest, process.env.NODE_ENV saca su valor por el flag de cross-env=test, si no, es development.
 //en heroku, NODE_ENV se setea a production automaticamente, por lo que tengo que planear para eso
+//usando heroku config:set puedo setear variables de entorno de heroku --> heroku config:set API_KEY=2312384835
 process.env.NODE_ENV = process.env.NODE_ENV || "development"
 
 if (process.env.NODE_ENV === "test"){
