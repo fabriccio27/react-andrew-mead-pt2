@@ -9,6 +9,8 @@ const expensesReducer = (state=expReducerDefaultState, action) =>{
                 return obj.id!==action.id;
             });
             return newState;
+        case "SET_EXPENSES":
+            return action.expenses;
         case "EDIT_EXPENSE":
             const modState = state.map(exp=>{
                 if (exp.id===action.id){

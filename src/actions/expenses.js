@@ -53,5 +53,33 @@ const removeExpense = ({id}={}) => {
         id
     }
 }
+//SET_EXPENSES
+const setExpenses=(expenses)=>{
+    return {
+        type:"SET_EXPENSES",
+        expenses
+    }
+};
 
-export {addExpense, editExpense, removeExpense, startAddExpense};
+const startSetExpenses = () => {
+    return (dispatch)=>{
+        //si de aca no regreso nada, en app.js store.dispatch(startSetExpenses()) tiene undefined como return value de startSetExpenses
+        return database.ref("expenses").once("value")
+        .then((snapshot)=>{
+            const retrieved = []
+            snapshot.forEach(childSnap=>{
+                retrieved.push({
+                    id:childSnap.key,
+                    ...childSnap.val()
+                });
+            });
+            //console.log(retrieved); //recupera bien
+            dispatch(setExpenses(retrieved));
+        });
+    };
+    
+    //fetch all expense data once
+    //parse expense data as array
+    //dispatch setExpenses with parsed array
+}
+export {addExpense, editExpense, removeExpense, startAddExpense, setExpenses, startSetExpenses};

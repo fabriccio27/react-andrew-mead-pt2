@@ -1,10 +1,21 @@
-import {addExpense, editExpense, removeExpense, startAddExpense} from "../../actions/expenses";
+import {addExpense, editExpense, removeExpense, startAddExpense, setExpenses, startSetExpenses} from "../../actions/expenses";
 import testExpenses from "../fixtures/expenses";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
 import database from "../../firebase/firebase";
+import expensesReducer from "../../reducers/expenses";
 
 const createMockStore = configureMockStore([thunk]);
+
+beforeEach((done)=>{
+    //esto es para que haya algo en la db de firebase y poder ver si los fetch andan.
+    const expensesData = {};
+    testExpenses.forEach(({id, description, createdAt, amount, note})=>{
+        expensesData[id]={description, createdAt, amount, note};
+    })
+    database.ref("expenses").set(expensesData).then(()=>done());
+});
+
 
 // para hacer imports con esta notacion tengo que hacer un archivo de babel
 test("should remove expense action object", ()=>{
@@ -28,7 +39,7 @@ test("should return an edit expense action object", ()=>{
     });
 });
 
-test("should setupadd expense action object when passing values", ()=>{
+test("should setup add expense action object when passing values", ()=>{
     
     const action = addExpense(testExpenses[2]);
     //si comparo con lo que espero, tengo un id que es generado para ser unico, eso me va a complicar en la prueba. Hay workaround
@@ -99,6 +110,37 @@ test("should add expense when expense is empty", (done)=>{
         done();
     });
 });
+
+test("should setup set expenses action object with data", ()=>{
+    const action = setExpenses(testExpenses);
+    expect(action).toEqual({
+        type:"SET_EXPENSES",
+        expenses:testExpenses
+    });
+});
+
+test("should setup expenses", ()=>{
+    const action = {
+        type:"SET_EXPENSES",
+        expenses:[testExpenses[0]]
+    }
+    const state = expensesReducer(testExpenses, action)
+    expect(state).toEqual([testExpenses[0]]);
+});
+
+test("should fetch expenses from the firebase database", (done)=>{
+    const store = createMockStore({});
+
+    store.dispatch(startSetExpenses()).then(()=>{
+
+        const actions = store.getActions();
+        expect(actions[0]).toEqual({
+            type:"SET_EXPENSES",
+            expenses:testExpenses
+        });
+        done();
+    });
+})
 
 /* test("should return an add expense action object when passing no arguments", ()=>{
     
