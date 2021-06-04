@@ -39,12 +39,21 @@ const startAddExpense  = (expenseData = {}) => {
         });
     };
 }
-
+//EDIT EXPENSE SECTION -----------------------------------------------
 const editExpense = (id, updates) => {
     return {
         type:"EDIT_EXPENSE",
         id,
         updates
+    };
+};
+const startEditExpense =  (id, updates) =>{
+    return (dispatch) => {
+        return database.ref(`expenses/${id}`).update({...updates})
+        .then(()=>{
+            dispatch(editExpense(id,updates));
+        })
+        .catch((error)=>console.log(error));
     };
 };
 //REMOVE EXPENSE SECTION ---------------------------------------------
@@ -67,7 +76,7 @@ const startRemoveExpense = (id) => {
         });
     };
 };
-//SET_EXPENSES
+//SET_EXPENSES --------------------------------------------------------------
 const setExpenses=(expenses)=>{
     return {
         type:"SET_EXPENSES",
@@ -96,4 +105,4 @@ const startSetExpenses = () => {
     //parse expense data as array
     //dispatch setExpenses with parsed array
 }
-export {addExpense, editExpense, removeExpense, startAddExpense, setExpenses, startSetExpenses, startRemoveExpense};
+export {addExpense, editExpense, removeExpense, startAddExpense, setExpenses, startSetExpenses, startRemoveExpense, startEditExpense};

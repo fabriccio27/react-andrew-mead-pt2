@@ -1,14 +1,14 @@
 import React from "react";
 import ExpenseForm from "./ExpenseForm";
 import {connect} from "react-redux"; //quiero modificar el state a traves de esta pagina, asi que necesito conectar
-import {editExpense, startRemoveExpense} from "../actions/expenses";
+import {startEditExpense, startRemoveExpense} from "../actions/expenses";
 //lo que quiero es despachar la accion que me permita borrar segun id, una expensa
 // - tengo que conectar componente al store, pero si no requiero nada del state (porque ya obtuve de props en este caso), dejo () vacios
 
 
 export class EditExpensePage extends React.Component {
     onSubmit = (expense) =>{
-        this.props.editExpense(this.props.expense.id, expense);
+        this.props.startEditExpense(this.props.expense.id, expense);
         this.props.history.push("/");
     };
     onClick = () =>{
@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch) =>{
     /* a las props que accedo en las funciones, le mapoe una funcion que incluye dispatch 
     y una accion, pasar los parametros bien */
     return {
-        editExpense:(id,expense) => dispatch(editExpense(id,expense)),
+        startEditExpense:(id,expense) => dispatch(startEditExpense(id,expense)),
         startRemoveExpense:(data) => dispatch(startRemoveExpense(data))
     };
 }

@@ -63,8 +63,8 @@ const mapDispatchToProps = (dispatch) => {
         setTextFilter:(text) => dispatch(setTextFilter(text)),
         setStartDate:(startDate) => dispatch(setStartDate(startDate)),
         setEndDate:(endDate) => dispatch(setEndDate(endDate)),
-        sortByDate:() => dispatch(sortByAmount()),
-        sortByAmount:() => dispatch(sortByDate())
+        sortByDate:() => dispatch(sortByDate()),
+        sortByAmount:() => dispatch(sortByAmount())
     };
 };
 

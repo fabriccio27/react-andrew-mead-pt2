@@ -26,10 +26,10 @@ test("should erase expense correctly", ()=>{
 
 test("should edit expense correctly", ()=>{
     
-    const editExpense = jest.fn();
-    const wrapper = shallow(<EditExpensePage editExpense={editExpense} expense={testExpenses[0]} history={history} />);
+    const startEditExpense = jest.fn();
+    const wrapper = shallow(<EditExpensePage startEditExpense={startEditExpense} expense={testExpenses[0]} history={history} />);
     // tengo que encontrar el boton para borrar
     wrapper.find("ExpenseForm").prop("onSubmit")(testExpenses[0]);
-    expect(editExpense).toHaveBeenLastCalledWith(testExpenses[0].id,testExpenses[0]);
+    expect(startEditExpense).toHaveBeenLastCalledWith(testExpenses[0].id,testExpenses[0]);
     expect(history.push).toHaveBeenLastCalledWith("/");
 });
