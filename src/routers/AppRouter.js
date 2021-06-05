@@ -7,6 +7,7 @@ import AddExpensePage from "../components/AddExpensePage";
 import EditExpensePage from "../components/EditExpensePage";
 import HelpPage from "../components/HelpPage";
 import NotFoundPage from "../components/NotFoundPage";
+import LoginPage from "../components/LoginPage";
 
 
 const AppRouter = () =>(
@@ -15,7 +16,8 @@ const AppRouter = () =>(
         <div>
             <Header />
             <Switch>
-                <Route exact={true} path="/" component={ExpenseDashboardPage} /> {/* if I remove the exact prop for this component,  every route starting with / will show this component also */}
+                <Route exact={true} path="/" component={LoginPage}/>
+                <Route path="/dashboard" component={ExpenseDashboardPage} /> {/* if I remove the exact prop for this component,  every route starting with / will show this component also */}
                 <Route exact={true} path="/create" component={AddExpensePage} />
                 <Route path="/edit/:id" component={EditExpensePage} />
                 <Route path="/help" component={HelpPage} /> {/* this will match /help and /help/whatever */}

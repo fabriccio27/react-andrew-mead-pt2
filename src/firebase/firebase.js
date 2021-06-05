@@ -1,4 +1,7 @@
 import firebase from "firebase";
+
+// NOMBRE PUBLICO PROJECT AUTH --> project-830574263184
+
 //import testExpenses from "../tests/fixtures/expenses";
 //los valores de config van a apuntar a distintas dbs segun que env este definido, test o development.
 var config = {
@@ -14,8 +17,11 @@ var config = {
 
 firebase.initializeApp(config);
 const database = firebase.database();
+const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-export {firebase, database as default};
+// una vez que exporto esto de arriba puedo empezar a generar funciones que arranquen el proceso de autenticacion
+
+export {firebase, googleProvider, database as default};
 
 /* database.ref("expenses").once("value")
 .then((snapshot)=>{
