@@ -15,6 +15,8 @@ import expensesReducer from "../../reducers/expenses";
 const createMockStore = configureMockStore([thunk]);
 //esto lo hago para poder despachar acciones, o sea, creo un store tal que me permite usar dispatch, y ver las acciones que ha recibido ese mock store
 //al tener las acciones recibidas por el mock store, puedo correr asserts para ver si la accion esta generando el efecto deseado
+const uid = "turufu";
+const defaultAuthState = {auth:{uid}};
 
 beforeEach((done)=>{
     //esto es para que haya algo en la db de firebase y poder ver si los fetch andan.
@@ -22,7 +24,7 @@ beforeEach((done)=>{
     testExpenses.forEach(({id, description, createdAt, amount, note})=>{
         expensesData[id]={description, createdAt, amount, note};
     })
-    database.ref("expenses").set(expensesData).then(()=>done());
+    database.ref(`users/${uid}/expenses`).set(expensesData).then(()=>done());
 });
 
 
@@ -38,7 +40,9 @@ test("should remove expense action object", ()=>{
 
 test("should remove expense from database when passing id", (done)=>{
     const id = testExpenses[1].id;
-    const store = createMockStore({});
+    //en este caso tiene que haber un user con uid == testUid, asi puedo ver si borra bien, para eso esta el argumento de createMockStore
+
+    const store = createMockStore(defaultAuthState);
     store.dispatch(startRemoveExpense(id))
     .then(()=>{
         const actions = store.getActions();
@@ -47,7 +51,7 @@ test("should remove expense from database when passing id", (done)=>{
             id
         });
         //esto lo hago para que la promise la pueda enganchar en el proximo then y no despues de once("value")
-        return database.ref(`expenses/${id}`).once("value"); //esto me va devolver null o undefined, por eso uso toBeFalsy
+        return database.ref(`users/${uid}/expenses/${id}`).once("value"); //esto me va devolver null o undefined, por eso uso toBeFalsy
     })
     .then((snapshot)=>{
         expect(snapshot.val()).toBeFalsy();
@@ -68,7 +72,7 @@ test("should return an edit expense action object", ()=>{
 });
 
 test("should edit an expense stored in firebase", (done)=>{
-    const store = createMockStore({});
+    const store = createMockStore(defaultAuthState);
     const id = testExpenses[0].id;
     const updates = {
         note:"I just called to say I love you",
@@ -76,7 +80,7 @@ test("should edit an expense stored in firebase", (done)=>{
     };
     store.dispatch(startEditExpense(id, updates))
     .then(()=>{
-        return database.ref(`expenses/${id}`).once("value");
+        return database.ref(`users/${uid}/expenses/${id}`).once("value");
     })
     .then(snapshot=>{
         expect(snapshot.val().note).toEqual(updates.note);
@@ -98,7 +102,7 @@ test("should add expense to database and store", (done)=>{
     /* por que paso done? hasta aca todos los test fueron sync, pero aca estoy usando una llamada a firebase async
     Si no paso done, el test va a correr y no va a esperar a que la promise se resuelva, si la promesa fracaso, el test no se enteró 
     y da como valido el test case. Con done(), indico al test hasta que parte del codigo tiene que esperar para concluir*/
-    const store = createMockStore({});
+    const store = createMockStore(defaultAuthState);
     const expenseData = {
         description:"Mouse",
         note:"",
@@ -116,7 +120,7 @@ test("should add expense to database and store", (done)=>{
                 ...expenseData
             }
         });
-        return database.ref(`expenses/${actions[0].expense.id}`).once("value");
+        return database.ref(`users/${uid}/expenses/${actions[0].expense.id}`).once("value");
         //cualquier cosa que ponga aca corre despues de la llamada async a firebase, por el then
     }).then((snapshot)=>{
         expect(snapshot.val()).toEqual(expenseData);
@@ -129,7 +133,7 @@ test("should add expense when expense is empty", (done)=>{
     /* por que paso done? hasta aca todos los test fueron sync, pero aca estoy usando una llamada a firebase async
     Si no paso done, el test va a correr y no va a esperar a que la promise se resuelva, si la promesa fracaso, el test no se enteró 
     y da como valido el test case. Con done(), indico al test hasta que parte del codigo tiene que esperar para concluir*/
-    const store = createMockStore({});
+    const store = createMockStore(defaultAuthState);
     const expenseDefaults = {
         description:"",
         note:"",
@@ -147,7 +151,7 @@ test("should add expense when expense is empty", (done)=>{
                 ...expenseDefaults
             }
         });
-        return database.ref(`expenses/${actions[0].expense.id}`).once("value");
+        return database.ref(`users/${uid}/expenses/${actions[0].expense.id}`).once("value");
         //cualquier cosa que ponga aca corre despues de la llamada async a firebase, por el then
     }).then((snapshot)=>{
         expect(snapshot.val()).toEqual(expenseDefaults);
@@ -175,7 +179,7 @@ test("should setup expenses", ()=>{
 });
 
 test("should fetch expenses from the firebase database", (done)=>{
-    const store = createMockStore({});
+    const store = createMockStore(defaultAuthState);
 
     store.dispatch(startSetExpenses()).then(()=>{
 

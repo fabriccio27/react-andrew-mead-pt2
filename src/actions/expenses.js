@@ -13,6 +13,8 @@ component dispatch function(needs middleware and to modify store)
 function runs 
 */
 
+//si quiero hacer private space para users, tengo que cambiar las refs en las acciones relacionadas con la db
+
 const addExpense = (expense) => {
     return {
         type:"ADD_EXPENSE",
@@ -20,8 +22,11 @@ const addExpense = (expense) => {
     };
 };
 //si no agrego redux-thunk, no puedo procesar acciones que devuelven funciones en lugar de objetos
+//redux-thunk lo agrego como middleware en el store
 const startAddExpense  = (expenseData = {}) => {
-    return (dispatch)=>{
+    //en redux-thunk el 1er arg de la funcion es dispatch y el segundo es getState
+    return (dispatch, getState)=>{
+        const uid = getState().auth.uid;
         const {
             description="",
             note="",
@@ -31,7 +36,7 @@ const startAddExpense  = (expenseData = {}) => {
 
         const expense = {description,note,amount,createdAt}; //uso shorthand de js, key y value tienen mismo nombre
         //esto lo devuelvo para poder hacer chain de promises en test cases
-        return database.ref("expenses").push(expense).then((refObj)=>{
+        return database.ref(`users/${uid}/expenses`).push(expense).then((refObj)=>{
             dispatch(addExpense({
                 id:refObj.key,
                 ...expense
@@ -48,8 +53,9 @@ const editExpense = (id, updates) => {
     };
 };
 const startEditExpense =  (id, updates) =>{
-    return (dispatch) => {
-        return database.ref(`expenses/${id}`).update({...updates})
+    return (dispatch, getState) => {
+        const uid = getState().auth.uid;
+        return database.ref(`users/${uid}/expenses/${id}`).update({...updates})
         .then(()=>{
             dispatch(editExpense(id,updates));
         })
@@ -64,9 +70,10 @@ const removeExpense = ({id}={}) => {
     };
 };
 const startRemoveExpense = (id) => {
-    return (dispatch)=>{
+    return (dispatch, getState)=>{
+        const uid = getState().auth.uid;
         /* tengo que usar database para borrar el elemento con id coincidente */
-        return database.ref(`expenses/${id}`).remove()
+        return database.ref(`users/${uid}/expenses/${id}`).remove()
         .then(()=>{
             dispatch(removeExpense({id}));
         })
@@ -85,9 +92,10 @@ const setExpenses=(expenses)=>{
 };
 
 const startSetExpenses = () => {
-    return (dispatch)=>{
+    return (dispatch, getState)=>{
         //si de aca no regreso nada, en app.js store.dispatch(startSetExpenses()) tiene undefined como return value de startSetExpenses
-        return database.ref("expenses").once("value")
+        const uid = getState().auth.uid;
+        return database.ref(`users/${uid}/expenses`).once("value")
         .then((snapshot)=>{
             const retrieved = []
             snapshot.forEach(childSnap=>{
