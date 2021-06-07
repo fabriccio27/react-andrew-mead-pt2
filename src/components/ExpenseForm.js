@@ -64,19 +64,18 @@ class ExpenseForm extends React.Component {
     };
     render(){
         return(
-            <div>
-                ExpenseForm
-                {this.state.error && <h3>{this.state.error}</h3>}
-                <form onSubmit={this.onSubmit}>
+                <form onSubmit={this.onSubmit} className="form">
+                    {this.state.error && <h3 className="form__error">{this.state.error}</h3>}
                     <input 
                         type="text" 
                         autoFocus 
                         placeholder="Description" 
                         value={this.state.description}
                         onChange={this.onDescriptionChange}
+                        className="text-input"
                     />
-                    <input type="text" placeholder="Amount" value={this.state.amount} onChange={this.onAmountChange}/> {/* si para amount dejo type number, no puedo controlar los decimales, por eso cambio a text */}
-                    <textarea placeholder="Add a note to your expense (optional)" onChange={this.onNoteChange}></textarea>
+                    <input type="text" placeholder="Amount" value={this.state.amount} onChange={this.onAmountChange} className="text-input"/> {/* si para amount dejo type number, no puedo controlar los decimales, por eso cambio a text */}
+                    <textarea placeholder="Add a note to your expense (optional)" onChange={this.onNoteChange} className="text-area"></textarea>
                     <SingleDatePicker
                         date={this.state.createdAt} // esta es la fecha que se va a mostrar inicialmente. En state sale de moment()
                         onDateChange={this.onDateChange} // handler para cuando user cambia fecha
@@ -85,9 +84,10 @@ class ExpenseForm extends React.Component {
                         numberOfMonths={1} // me muestra de a un mes en el picker
                         isOutsideRange={()=>false}
                     />
-                    <button>Add Expense</button>
+                    <div> {/* meterlo en un div hace que no me ocupe todo el ancho */}
+                        <button className="btn">Save Expense</button>
+                    </div>
                 </form>
-            </div>
         )
     }
 }

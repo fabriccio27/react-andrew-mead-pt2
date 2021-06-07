@@ -1,0 +1,18 @@
+.btn {
+    background-color:dodgerblue;
+    color:white;
+    display:inline-block; /* inline-block tiene en cuenta margin y padding vertical */
+    border:none;
+    border-radius:1px;
+    font-weight: 300;
+    line-height:1;
+    padding:$s-size;
+    text-decoration:none;
+    
+}
+.btn--link {
+    background:none;
+}
+.btn--remove{
+    background: #888;
+}

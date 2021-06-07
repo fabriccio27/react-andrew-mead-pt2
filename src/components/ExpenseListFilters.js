@@ -24,27 +24,35 @@ export class ExpenseListFilters extends React.Component {
     };
     render(){
         return(
-            <div>
-                <input type="text" value={this.props.filters.text} onChange={this.onTextChange} />
+            <div className="content-container">
+                <div className="input-group">
+                    <div className="input-group__item">
+                        <input type="text" value={this.props.filters.text} onChange={this.onTextChange} className="text-input" placeholder="Search expenses"/>
+                    </div>
+                    <div className="input-group__item">
+                        <select value={this.props.filters.sortBy} onChange={this.onSortChange} className="select">
+                            <option value="date">Date</option>
+                            <option value="amount">Amount</option>
+                        </select>
+                    </div>
+                    <div className="input-group__item">
+                        <DateRangePicker
+                            startDate={this.props.filters.startDate}
+                            startDateId={"pripripri"}
+                            endDate={this.props.filters.endDate}
+                            endDateId={"pruprupru"}
+                            onDatesChange={this.onDatesChange}
+                            focusedInput={this.state.calendarFocused}
+                            onFocusChange={this.onFocusChange}
+                            numberOfMonths={1}
+                            isOutsideRange={()=>false}
+                            showClearDates={true} //esto es para borrar las fechas
+                        />
+                    </div>
+                </div>
+                
                 {/* cada vez que modifique el input, por el onChange, voy a resetear filter.text en el store
                 como en ExpenseList estoy usando selectExpenses, me va cambiando que es lo que renderiza */}
-                <select value={this.props.filters.sortBy} onChange={this.onSortChange}>
-                    <option value="date">Date</option>
-                    <option value="amount">Amount</option>
-                </select>
-                <DateRangePicker
-                    startDate={this.props.filters.startDate}
-                    startDateId={"pripripri"}
-                    endDate={this.props.filters.endDate}
-                    endDateId={"pruprupru"}
-                    onDatesChange={this.onDatesChange}
-                    focusedInput={this.state.calendarFocused}
-                    onFocusChange={this.onFocusChange}
-                    numberOfMonths={1}
-                    isOutsideRange={()=>false}
-                    showClearDates={true} //esto es para borrar las fechas
-                    
-                />
             </div>
         );
    };

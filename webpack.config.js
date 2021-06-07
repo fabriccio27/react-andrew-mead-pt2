@@ -44,7 +44,7 @@ module.exports = (env, argv) =>{
                 test:/\.s?css$/i, // lo que tenga .scss o .css al final
                 use: [
                     MiniCssExtractPlugin.loader,
-                    {loader:'css-loader', options:{sourceMap:true}},
+                    {loader:'css-loader', options:{sourceMap:true, url:false}},
                     {loader:'sass-loader', options:{sourceMap:true}}
                 ],
                 //["style-loader","css-loader","sass-loader"],
