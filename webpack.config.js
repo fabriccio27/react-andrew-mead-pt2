@@ -24,7 +24,6 @@ module.exports = (env, argv) =>{
     return {
         mode:"development",
         entry: './src/app.js',
-        //entry: './src/playground/hoc.js',
         output:{
             // path es absoluto, por eso uso __dirname
             path:path.join(__dirname,"public","dist"),
